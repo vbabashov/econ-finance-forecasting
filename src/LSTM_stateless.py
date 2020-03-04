@@ -237,20 +237,3 @@ print(results.describe())
 results.boxplot()
 pyplot.show()
 
-
-
-
-
-
-
-## line plot of observed vs predicted
-#pyplot.figure(figsize = (15, 5))
-#pyplot.plot(data_raw[-test_size:], label = "Test Data")
-#pyplot.plot(predictions, label = "Predicted")
-#pyplot.xlabel("Weeks")
-#pyplot.ylabel("1000 Pieces of Notes")
-#pyplot.title("Comparison true vs. predicted training / test for " + denom)
-#pyplot.legend()
-#pyplot.show()
-
-
