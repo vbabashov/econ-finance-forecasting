@@ -6,7 +6,6 @@ Created on Tue Nov 26 15:43:27 2019
 @author: vusalbabashov
 """
 
-# naive forecast strategies for the power usage dataset
 from math import sqrt
 from numpy import split
 from numpy import array
