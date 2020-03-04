@@ -5,7 +5,6 @@ Created on Thu Nov  7 15:20:54 2019
 
 @author: vusalbabashov
 """
-#https://machinelearningmastery.com/time-series-forecasting-long-short-term-memory-network-python/
 import pandas as pd
 import numpy as np
 from pandas import DataFrame
