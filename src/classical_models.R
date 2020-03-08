@@ -208,6 +208,7 @@ fc_dcmp %>%
 
 
 ### Hierarchical TS Forecasting ####
+# Reconciliation of non-normal forecasts is not yet supported
 train <- weekly_tssible_rdc %>%
   filter_index("2016 W01" ~ "2018 W52")
 train
@@ -237,19 +238,19 @@ write.csv(xxx,"/Users/vusalbabashov/Desktop/MAE_agg.csv")
 
 #######################################################################################
 
-fc <- fit_all_v1%>%   
-  forecast(h = "2 weeks") %>%
-  hilo(level = c(80, 95)) %>%
-  print(n=500)
-
-augment(fit_all_v1) %>%
-  filter(Region == "R1"& Product == "50FD") %>%
-  ggplot(aes(x = year_week)) +
-  geom_line(aes(y = weekly_total)) +
-  geom_line(aes(y = .fitted)) +
-  xlab("Year") + ylab(NULL) +
-  ggtitle("Total Value in $") +
-  guides(colour=guide_legend(title="Forecast"))
+# fc <- fit_all_v1%>%   
+#   forecast(h = "2 weeks") %>%
+#   hilo(level = c(80, 95)) %>%
+#   print(n=500)
+# 
+# augment(fit_all_v1) %>%
+#   filter(Region == "R1"& Product == "50FD") %>%
+#   ggplot(aes(x = year_week)) +
+#   geom_line(aes(y = weekly_total)) +
+#   geom_line(aes(y = .fitted)) +
+#   xlab("Year") + ylab(NULL) +
+#   ggtitle("Total Value in $") +
+#   guides(colour=guide_legend(title="Forecast"))
 
 
 
