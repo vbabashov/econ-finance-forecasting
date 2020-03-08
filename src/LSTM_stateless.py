@@ -5,7 +5,6 @@ Created on Thu Nov  7 15:20:54 2019
 
 @author: vusalbabashov
 """
-#https://machinelearningmastery.com/time-series-forecasting-long-short-term-memory-network-python/
 import pandas as pd
 import numpy as np
 from pandas import DataFrame
@@ -236,21 +235,4 @@ results['rmse'] = error_scores
 print(results.describe())
 results.boxplot()
 pyplot.show()
-
-
-
-
-
-
-
-## line plot of observed vs predicted
-#pyplot.figure(figsize = (15, 5))
-#pyplot.plot(data_raw[-test_size:], label = "Test Data")
-#pyplot.plot(predictions, label = "Predicted")
-#pyplot.xlabel("Weeks")
-#pyplot.ylabel("1000 Pieces of Notes")
-#pyplot.title("Comparison true vs. predicted training / test for " + denom)
-#pyplot.legend()
-#pyplot.show()
-
 
