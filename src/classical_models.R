@@ -27,7 +27,8 @@ raw
 
 
 raw %>%
-  gather(key='Product', value = "Value", '5NW':'100FD') %>%
+  select(-Site_Coded) %>%
+  gather(key='Product', value = "Value", 'ANW':'EFD') %>%
   mutate(Date = dmy(Date)) %>%
   as_tsibble(index=Date, key = c(Region, Site, Product), regular=FALSE) ->raw1
 raw1
@@ -149,22 +150,23 @@ fit_all_v1 <- train %>%
   model(
     arima = ARIMA(log(weekly_total+1) ~ pdq (d = 0:1) + PDQ (D = 0:1, period = 52) + weekly_hol),
     snaive= SNAIVE(weekly_total ~ lag(52)),
-    harmonic1 = ARIMA(log(weekly_total+1) ~ fourier(K = 1) + PDQ(0, 0, 0) + weekly_hol),
     harmonic2 = ARIMA(log(weekly_total+1) ~ fourier(K = 2) + PDQ(0, 0, 0) + weekly_hol),
-    harmonic3 = ARIMA(log(weekly_total+1) ~ fourier(K = 3) + PDQ(0, 0, 0) + weekly_hol)
+    harmonic4 = ARIMA(log(weekly_total+1) ~ fourier(K = 4) + PDQ(0, 0, 0) + weekly_hol),
+    harmonic6 = ARIMA(log(weekly_total+1) ~ fourier(K = 6) + PDQ(0, 0, 0) + weekly_hol),
+    harmonic8 = ARIMA(log(weekly_total+1) ~ fourier(K = 8) + PDQ(0, 0, 0) + weekly_hol)
   )
   
 fc_all_v1 <- fit_all_v1 %>% forecast(test) 
 #fc_all_v1 <- fit_all_v1 %>% forecast(test) %>% hilo(level = c(80, 95))
 
 fc_all_v1 %>% accuracy(weekly_tssible_rdp) %>% select(.model, Region, Product, MAE)-> xxx
-write.csv(xxx,"/Users/vusalbabashov/Desktop/MAE.csv") 
+write.csv(xxx,"/Users/vusalbabashov/Desktop/MAE_6methods.csv") 
 
 
 # Auto Plot
 fit_all_v1 %>% 
   forecast(test) %>%
-  filter(Region=="R1" & Product == "100FD") %>%
+  filter(Region=="R1" & Product == "EFD") %>%
   autoplot(filter_index(weekly_tssible_rdp, "2016 W01"~.), level=80) +
   #ggtitle("Forecasts for production") +
   xlab("Year") + ylab("Total Number of Notes")
@@ -194,12 +196,12 @@ train %>%
   )) %>%
   forecast(test) -> fc_dcmp
 
-fc_dcmp %>% accuracy(weekly_tssible_rdp) %>% select(.model, Region, Product, MAE)-> xxx
-write.csv(xxx,"/Users/vusalbabashov/Desktop/MAE_dcmp.csv") 
+fc_dcmp %>% accuracy(weekly_tssible_rdp) %>% select(.model, Region, Product, MAE)-> x
+write.csv(x,"/Users/vusalbabashov/Desktop/MAE_dcmp.csv") 
 
 #Plot
 fc_dcmp %>%
-  filter(Region=="R1" & Product == "100FD") %>%
+  filter(Region=="R1" & Product == "EFD") %>%
   autoplot(filter_index(weekly_tssible_rdp, "2016 W01"~.), level=80) +
   #ggtitle("Forecasts for production") +
   xlab("Year") + ylab("Total Number of Notes")
