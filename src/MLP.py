@@ -11,7 +11,7 @@ Created on Thu Nov  7 12:59:06 2019
 import numpy
 import matplotlib.pyplot as plt
 from pandas import read_csv
-import pandas as pd 
+import pandas as pd
 import math
 import numpy as np
 import tensorflow
@@ -34,7 +34,7 @@ from matplotlib import pyplot
 from numpy.random import seed
 seed(0)
 import tensorflow as tf
-tf.random.set_seed(0)
+# tf.random.set_seed(0)
 
 
 #dataframe_columns = ['NEW.WIT.5', 'FIT.WIT.5', 'FIT.DEPO.5', 'NEW.WIT.10',
@@ -46,13 +46,31 @@ tf.random.set_seed(0)
 
 
 # Get the raw data values from the pandas data frame.
-denom='FIT.DEPO.5'
-dataframe = pd.read_csv("/Users/vusalbabashov/Desktop/forecast/python_codes/02_Codes/calgary2019w43naive.csv", engine='python')
-data_raw = dataframe[denom]
-data_raw = data_raw.astype("float32")
-data_raw = data_raw.values
+# denom='FIT.DEPO.5'
+# dataframe = pd.read_csv("/Users/vusalbabashov/Desktop/forecast/python_codes/02_Codes/calgary2019w43naive.csv", engine='python')
+# data_raw = dataframe[denom]
+# data_raw = data_raw.astype("float32")
+# data_raw = data_raw.values
 #data_raw = np.log1p(data_raw)
 
+def loadVB_daatset():
+	denom='FIT.DEPO.5'
+	dataframe = pd.read_csv("/Users/vusalbabashov/Desktop/forecast/python_codes/02_Codes/calgary2019w43naive.csv", engine='python')
+	data_raw = dataframe[denom]
+	data_raw = data_raw.astype("float32")
+	data_raw = data_raw.values
+	return data_raw, denom
+
+def loadAD_dataset(region='R1', columnName='total'):
+	filepath = "B:\\projects\\econ-finance-forecasting\\data"
+	df = pd.read_csv(filepath+'\\'+region+'.csv')
+	df.drop(['Region', 'Site'], inplace=True, axis=1)
+	df.set_index(['Date'], inplace=True)
+	df['total'] = df.sum(axis=1)
+	data = df[columnName].astype("float32")
+	return data.values, columnName
+
+data_raw, denom = loadAD_dataset()
 # Create a time series plot.
 #plt.figure(figsize = (15, 5))
 #plt.plot(data_raw, label = "Bank Note")
@@ -125,10 +143,10 @@ def invert_scale(scaler, X, value):
 
 ###########  [samples, features]  ###############
 # fit an LSTM network to training data
-def fit_mlp(train, batch, nb_epoch, neurons):  
+def fit_mlp(train, batch, nb_epoch, neurons):
     X, y = train[:, 0:-1], train[:, -1]
     X = X.reshape(X.shape[0],X.shape[1])      #samples = X.shape[0], features = X.shape[1]
-    model = Sequential()    
+    model = Sequential()
     model.add(Dense(neurons, activation = 'relu', input_dim=n_STEPS))
     model.add(Dropout(0.2))
     model.add(Dense(100))
@@ -141,11 +159,11 @@ def fit_mlp(train, batch, nb_epoch, neurons):
     # summarize history for loss
     plt.plot(history.history['loss'])
     plt.plot(history.history['val_loss'])
-    plt.title('model loss') 
+    plt.title('model loss')
     plt.ylabel('loss')
-    plt.xlabel('epoch') 
+    plt.xlabel('epoch')
     plt.legend(['train', 'validation'], loc='upper left')
-    plt.show()    
+    plt.show()
     # summarize history for accuracy
 #    plt.plot(history.history['accuracy'])
 #    plt.plot(history.history['val_accuracy'])
@@ -153,7 +171,7 @@ def fit_mlp(train, batch, nb_epoch, neurons):
 #    plt.ylabel('accuracy')
 #    plt.xlabel('epoch')
 #    plt.legend(['train', 'validation'], loc='upper left')
-#    plt.show()    
+#    plt.show()
     return model
 
 # make a one-step forecast
@@ -224,7 +242,7 @@ print('Test RMSE: %.3f' % rmse)
 
 #repeats = 10
 #error_scores = list()
-#for r in range(repeats):    
+#for r in range(repeats):
 #    # fit the model
 #    mlp_model = fit_mlp(train_scaled, batch_SIZE, n_EPOCH, n_NEURON)
 #    # forecast the entire training dataset to build up state for forecasting
@@ -232,7 +250,7 @@ print('Test RMSE: %.3f' % rmse)
 #    train_predict = mlp_model.predict(train_reshaped, batch_size=batch_SIZE)
 #    # walk-forward validation on the test data
 #    test_predict = list()
-#    
+#
 #    for i in range(len(test_scaled)):
 #        # make one-step forecast
 #        X, y = test_scaled[i, 0:-1], test_scaled[i, -1]
@@ -247,11 +265,11 @@ print('Test RMSE: %.3f' % rmse)
 #        test_predict.append(yhat)
 #        #expected = data_raw[len(train) + i + 1]
 #        #print('Week=%d, Predicted=%f, Expected=%f' % (i+1, yhat, expected))
-#   
+#
 #    # report performance
 #    rmse = sqrt(mean_squared_error(data_raw[-test_size:], test_predict))
 #    print('Test RMSE: %.3f' % rmse)
-#    error_scores.append(rmse)        
+#    error_scores.append(rmse)
 #
 ## summarize results
 #results = DataFrame()
@@ -339,7 +357,7 @@ print('Test RMSE: %.3f' % rmse)
 #trainX, trainY = create_dataset(train, look_back)
 #testX, testY = create_dataset(test, look_back)
 ##create MLP model
-#model = Sequential()    
+#model = Sequential()
 #model.add(Dense(50, activation = 'relu', input_dim=look_back))
 ##model.add(Dense(50, activation = 'relu'))
 #model.add(Dense(1))
@@ -400,7 +418,7 @@ print('Test RMSE: %.3f' % rmse)
 # =============================================================================
 # ###############LSTM for Regression with Time Steps###################################
 # # LSTM for international airline passengers problem with time step regression framing
-# 
+#
 # # reshape input to be [samples, time steps, features]
 # trainX = numpy.reshape(trainX, (trainX.shape[0], trainX.shape[1], 1))
 # testX = numpy.reshape(testX, (testX.shape[0], testX.shape[1], 1))
@@ -436,10 +454,10 @@ print('Test RMSE: %.3f' % rmse)
 # plt.plot(trainPredictPlot)
 # plt.plot(testPredictPlot)
 # plt.show()
-# 
-# 
+#
+#
 # ################LSTM with Memory Between Batches###############3333
-# 
+#
 # # LSTM for international airline passengers problem with memory
 # # normalize the dataset
 # scaler = MinMaxScaler(feature_range=(0, 1))
@@ -491,12 +509,12 @@ print('Test RMSE: %.3f' % rmse)
 # plt.plot(trainPredictPlot)
 # plt.plot(testPredictPlot)
 # plt.show()
-# 
-# 
-# 
+#
+#
+#
 # #######################Stacked LSTMs with Memory Between Batches################
 # # Stacked LSTM for international airline passengers problem with memory
-# 
+#
 # # fix random seed for reproducibility
 # numpy.random.seed(7)
 # # normalize the dataset
@@ -550,5 +568,5 @@ print('Test RMSE: %.3f' % rmse)
 # plt.plot(trainPredictPlot)
 # plt.plot(testPredictPlot)
 # plt.show()
-# 
+#
 # =============================================================================

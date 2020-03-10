@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 from numpy.random import seed
 seed(0)
 import tensorflow as tf
-tf.random.set_seed(0)
+# tf.random.set_seed(0)
 
 
 # date-time parsing function for loading the dataset
@@ -40,12 +40,12 @@ def parser(x):
 
 
 # Get the raw data values from the pandas data frame.
-denom='NEW.WIT.50'
-dataframe = pd.read_csv("/Users/vusalbabashov/Desktop/forecast/python_codes/02_Codes/calgary2019w43naive.csv", engine='python')
-data_raw = dataframe[denom]
-data_raw = data_raw.astype("float32")
-data_raw = data_raw.values
-data_raw = np.log1p(data_raw)
+# denom='NEW.WIT.50'
+# dataframe = pd.read_csv("/Users/vusalbabashov/Desktop/forecast/python_codes/02_Codes/calgary2019w43naive.csv", engine='python')
+# data_raw = dataframe[denom]
+# data_raw = data_raw.astype("float32")
+# data_raw = data_raw.values
+# data_raw = np.log1p(data_raw)
 
 # Create a time series plot.
 #plt.figure(figsize = (15, 5))
@@ -56,6 +56,25 @@ data_raw = np.log1p(data_raw)
 #plt.legend()
 #plt.show()
 
+
+def loadVB_daatset():
+	denom='FIT.DEPO.5'
+	dataframe = pd.read_csv("/Users/vusalbabashov/Desktop/forecast/python_codes/02_Codes/calgary2019w43naive.csv", engine='python')
+	data_raw = dataframe[denom]
+	data_raw = data_raw.astype("float32")
+	data_raw = data_raw.values
+	return data_raw, denom
+
+def loadAD_dataset(region='R1', columnName='total'):
+	filepath = "B:\\projects\\econ-finance-forecasting\\data"
+	df = pd.read_csv(filepath+'\\'+region+'.csv')
+	df.drop(['Region', 'Site'], inplace=True, axis=1)
+	df.set_index(['Date'], inplace=True)
+	df['total'] = df.sum(axis=1)
+	data = df[columnName].astype("float32")
+	return np.log1p(data.values), columnName
+
+data_raw, denom = loadAD_dataset()
 
 n_TSTEPS = 4
 batch_SIZE = 64

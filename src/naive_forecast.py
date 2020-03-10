@@ -7,30 +7,30 @@ Created on Tue Nov 26 15:43:27 2019
 """
 
 from math import sqrt
-from numpy import split
-from numpy import array
-from pandas import read_csv
+# from numpy import split
+# from numpy import array
+# from pandas import read_csv
 from sklearn.metrics import mean_squared_error
 from matplotlib import pyplot
-import numpy
-import matplotlib.pyplot as plt
+# import numpy
+# import matplotlib.pyplot as plt
 import pandas as pd
-import math
-import tensorflow
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.layers import LSTM
-from tensorflow.keras.layers import Dropout
-from pandas import concat
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import mean_squared_error
-from pandas import datetime
-from pandas import DataFrame
+# import math
+# import tensorflow
+# from tensorflow.keras.models import Sequential
+# from tensorflow.keras.layers import Dense
+# from tensorflow.keras.layers import LSTM
+# from tensorflow.keras.layers import Dropout
+# from pandas import concat
+# from sklearn.preprocessing import MinMaxScaler
+# from sklearn.metrics import mean_squared_error
+# from pandas import datetime
+# from pandas import DataFrame
 # fix random seed for reproducibility
 from numpy.random import seed
 seed(0)
-import tensorflow as tf
-tf.random.set_seed(0)
+# import tensorflow as tf
+# tf.random.set_seed(0)
 
 
 #dataframe_columns = ['NEW.WIT.5', 'FIT.WIT.5', 'FIT.DEPO.5', 'NEW.WIT.10',
@@ -38,10 +38,23 @@ tf.random.set_seed(0)
 #       'NEW.WIT.50', 'FIT.WIT.50', 'FIT.DEPO.50', 'NEW.WIT.100', 'FIT.WIT.100',
 #       'FIT.DEPO.100']
 
+def loadVB_daatset():
+	bank_note='FIT.DEPO.50'
+	dataframe = pd.read_csv("/Users/vusalbabashov/Desktop/forecast/python_codes/02_Codes/calgary2019w43naive.csv", engine='python')
+	data = dataframe[bank_note].values
+	return data, bank_note
 
-bank_note='FIT.DEPO.50'
-dataframe = pd.read_csv("/Users/vusalbabashov/Desktop/forecast/python_codes/02_Codes/calgary2019w43naive.csv", engine='python')
-data = dataframe[bank_note].values
+def loadAD_dataset(region='R1', columnName='total'):
+	filepath = "B:\\projects\\econ-finance-forecasting\\data"
+	df = pd.read_csv(filepath+'\\'+region+'.csv')
+	df.drop(['Region', 'Site'], inplace=True, axis=1)
+	df.set_index(['Date'], inplace=True)
+	df['total'] = df.sum(axis=1)
+	data = df[columnName]
+	return data.values, columnName
+
+# data, bank_note = loadVB_daatset()
+data, bank_note  = loadAD_dataset()
 
 # split a univariate dataset into train/test sets
 def split_dataset(data):
@@ -126,5 +139,3 @@ pyplot.ylabel("Pieces of Notes (thousands)")
 pyplot.title("Weighted Average Forecast Strategy " + bank_note)
 pyplot.legend()
 pyplot.show()
-
-
