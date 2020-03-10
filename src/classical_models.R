@@ -22,7 +22,7 @@ library(dplyr)
 
 
 #read csv file in
-raw <- readr::read_csv("/Users/vusalbabashov/Desktop/data.csv") 
+raw <- readr::read_csv("/Users/vusalbabashov/Desktop/econ-finance-forecasting/data/data.csv") 
 raw
 
 
@@ -135,11 +135,11 @@ weekly_tssible_rdc
 ## Build Generic Non-seasonal and Seasonal Arima Model for each region
 
 train <- weekly_tssible_rdp %>%
-  filter_index("2016 W01" ~ "2018 W52")
+  filter_index("2017 W01" ~ "2019 W20")
 train
 
 test <- weekly_tssible_rdp %>%
-  filter_index("2019 W01" ~ .)
+  filter_index("2019 W21" ~ .)
 test
 
 
@@ -148,19 +148,19 @@ test
 
 fit_all_v1 <- train %>%
   model(
-    arima = ARIMA(log(weekly_total+1) ~ pdq (d = 0:1) + PDQ (D = 0:1, period = 52) + weekly_hol),
+    #arima = ARIMA(log(weekly_total+1) ~ pdq (d = 0:1) + PDQ (D = 0:1, period = 52) + weekly_hol),
     snaive= SNAIVE(weekly_total ~ lag(52)),
-    harmonic2 = ARIMA(log(weekly_total+1) ~ fourier(K = 2) + PDQ(0, 0, 0) + weekly_hol),
-    harmonic4 = ARIMA(log(weekly_total+1) ~ fourier(K = 4) + PDQ(0, 0, 0) + weekly_hol),
-    harmonic6 = ARIMA(log(weekly_total+1) ~ fourier(K = 6) + PDQ(0, 0, 0) + weekly_hol),
-    harmonic8 = ARIMA(log(weekly_total+1) ~ fourier(K = 8) + PDQ(0, 0, 0) + weekly_hol)
+    #harmonic2 = ARIMA(log(weekly_total+1) ~ fourier(K = 2) + PDQ(0, 0, 0) + weekly_hol),
+    #harmonic4 = ARIMA(log(weekly_total+1) ~ fourier(K = 4) + PDQ(0, 0, 0) + weekly_hol),
+    #harmonic6 = ARIMA(log(weekly_total+1) ~ fourier(K = 6) + PDQ(0, 0, 0) + weekly_hol),
+    #harmonic8 = ARIMA(log(weekly_total+1) ~ fourier(K = 8) + PDQ(0, 0, 0) + weekly_hol)
   )
   
 fc_all_v1 <- fit_all_v1 %>% forecast(test) 
 #fc_all_v1 <- fit_all_v1 %>% forecast(test) %>% hilo(level = c(80, 95))
 
-fc_all_v1 %>% accuracy(weekly_tssible_rdp) %>% select(.model, Region, Product, MAE)-> xxx
-write.csv(xxx,"/Users/vusalbabashov/Desktop/MAE_6methods.csv") 
+fc_all_v1 %>% accuracy(weekly_tssible_rdp) %>% select(.model, Region, Product, RMSE)-> xxx
+write.csv(xxx,"/Users/vusalbabashov/Desktop/baseline.csv") 
 
 
 # Auto Plot
